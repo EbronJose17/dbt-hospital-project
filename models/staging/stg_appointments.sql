@@ -1,3 +1,11 @@
+{{
+    config(
+        materialized = 'table',
+        schema = 'staging_schema'
+    )
+}}
+
+
 select
     *
 from 
