@@ -1,0 +1,20 @@
+{{
+    config(
+        schema = "intermediate_schema"
+    )
+}}
+
+select 
+    coalesce(patient_id, 'Unknown') as patient_id,
+    coalesce(first_name, 'Unknown') as first_name,
+    coalesce(last_name, 'Unknown') as last_name,
+    coalesce(gender, 'Unknown') as gender,
+    to_date(date_of_birth) as date_of_birth,
+    coalesce(contact_number, 'Unknown') as contact_number,
+    coalesce(address, 'Unknown') as address,
+    to_date(registration_date) as registration_date,
+    coalesce(insurance_provider, 'Unknown') as insurance_provider,
+    coalesce(insurance_number, 'Unknown') as insurance_number,
+    coalesce(email, 'Unknown') as email
+from 
+    {{ref('stg_patients')}}
