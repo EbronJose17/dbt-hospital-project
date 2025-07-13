@@ -15,6 +15,7 @@ select
     to_date(registration_date) as registration_date,
     coalesce(insurance_provider, 'Unknown') as insurance_provider,
     coalesce(insurance_number, 'Unknown') as insurance_number,
-    coalesce(email, 'Unknown') as email
+    coalesce(email, 'Unknown') as email,
+    current_timestamp as updated_at
 from 
     {{ref('stg_patients')}}
