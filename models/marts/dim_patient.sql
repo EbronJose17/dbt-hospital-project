@@ -6,6 +6,7 @@
 }}
 
 select 
+    patient_sk,
     patient_id,
     first_name,
     last_name,

@@ -4,7 +4,9 @@
     )
 }}
 
+
 select 
+    concat ('P', row_number() over (order by(select null))) as patient_sk,
     coalesce(patient_id, 'Unknown') as patient_id,
     coalesce(first_name, 'Unknown') as first_name,
     coalesce(last_name, 'Unknown') as last_name,

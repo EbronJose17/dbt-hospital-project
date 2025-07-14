@@ -5,6 +5,7 @@
 }}
 
 select 
+    concat('D', row_number() over(order by(select null))) as doctor_sk,
     coalesce(doctor_id, 'Unknown') as doctor_id,
     coalesce(first_name, 'Unknown') as first_name,
     coalesce(last_name, 'Unknown') as last_name,
