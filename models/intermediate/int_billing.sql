@@ -5,7 +5,6 @@
 }}
 
 select 
-    MD5(bill_id),   
     concat('B', row_number() over (order by(select null))) as billing_sk,
     coalesce(bill_id, 'Unknown') as bill_id,
     coalesce(patient_id, 'Unknown') as patient_id,
