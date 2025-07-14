@@ -1,3 +1,10 @@
+{{
+    config(
+        schema = 'marts_schema',
+        materialized = 'table'
+    )
+}}
+
 with patient_appointments as (
     select 
         patient_key,
