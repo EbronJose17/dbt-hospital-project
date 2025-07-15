@@ -9,6 +9,7 @@
         where   
             invocation_id = '{{invocation_id}}' and
             status = 'STARTED'
+
     {% endif %}
 {% endfor %}
 

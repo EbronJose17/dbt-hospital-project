@@ -2,7 +2,9 @@
     config(
         materialized = 'incremental',
         unique_key = 'treatment_type_sk',
-        schema = 'marts_schema'
+        schema = 'marts_schema',
+        pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
+        post_hook = '{{ log_macro_end(this.name, invocation_id) }}'
     )
 }}
 
