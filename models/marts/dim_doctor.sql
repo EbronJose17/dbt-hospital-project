@@ -9,6 +9,7 @@
 }}
 
 select 
-    *
+    *,
+    current_timestamp as updated_at
 from 
     {{ref('int_doctors')}}
