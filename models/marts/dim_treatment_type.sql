@@ -10,7 +10,7 @@
 
 with base as(
     select 
-        row_number() over (partition by treatment_type order by treatment_type) as rn,
+        row_number() over (partition by treatment_type, treatment_description order by treatment_type) as rn,
         *
     from 
         {{ref('int_treatments')}}
@@ -30,6 +30,6 @@ final as (
 
 select * from final
 
-{% if is_incremental() %}
-    where updated_at > (select max(updated_at) from {{ this }}) 
-{% endif %}
+-- {% if is_incremental() %}
+--     where updated_at > (select max(updated_at) from {{ this }}) 
+-- {% endif %}

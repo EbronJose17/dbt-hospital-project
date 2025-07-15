@@ -28,4 +28,5 @@ on
 left join 
     {{ref('dim_treatment_type')}} treatment_type 
 on  
-    treatment_type.treatment_type = treatments.treatment_type
+    treatment_type.treatment_type = treatments.treatment_type and
+    treatment_type.treatment_description = treatments.treatment_description

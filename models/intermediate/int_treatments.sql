@@ -6,8 +6,17 @@
     )
 }}
 
-with avg_cost as (
-    select avg(cost) as avg_treatment_cost from {{ref('stg_treatments')}}
+with min_max_cost as (
+    select 
+        treatment_type,
+        description,
+        min(cost) as min_treatment_cost,
+        max(cost) as max_treatment_cost 
+    from 
+        {{ref('stg_treatments')}}
+    group by    
+        treatment_type,
+        description
 ),
 
 base as (
@@ -26,15 +35,15 @@ final as (
         coalesce(t.description, 'Unknown') as treatment_description,
         cast(t.cost as numeric(10, 2)) as treatment_cost,
         to_date(t.treatment_date) as treatment_date,
-        case 
-            when treatment_cost < a.avg_treatment_cost then 'Low'
-            when treatment_cost > a.avg_treatment_cost then 'High'
-        end as treatment_cost_range,
+        concat(m.min_treatment_cost, ' - ', m.max_treatment_cost)as treatment_cost_range,
         current_timestamp() as updated_at
     from
         base t
-    cross join 
-        avg_cost a
+    left join 
+        min_max_cost m
+    on 
+        t.treatment_type = m.treatment_type and
+        t.description = m.description
 ) 
 
 select * from final 
