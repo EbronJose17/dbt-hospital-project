@@ -40,3 +40,5 @@ models:
     # Applies to all files under models/example/
     example:
       +materialized: table
+
+on-run-end: "{{ log_run_end_status(target.database, invocation_id, results) }}"
