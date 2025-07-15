@@ -1,0 +1,41 @@
+version: 2
+
+models:
+  - name: dim_doctor
+    description: 'Dimension doctor table for doctor information (Scd type 1)'
+    columns:
+      - name: doctor_sk
+        description: 'Surrogate key for doctors (Natural Key: doctor_id)'
+        tests:
+          - relationships:
+              to: ref('int_doctors')
+              field: doctor_sk
+          - unique
+          - not_null
+      - name: doctor_id
+        description: Natural key from source 
+        tests:
+          - unique
+          - not_null
+  
+  - name: dim_patient
+    description: 'Dimension patient table for patient information (Scd type 2)'
+    columns:
+      - name: patient_sk
+        description: 'Surrogate key for patients (Natural Key: patient_id)'
+        tests:
+          - unique
+          - not_null
+      - name: patient_id
+        description: 'Natural key from the source'
+        tests:
+          - unique
+          - not_null
+      - name: is_current
+        description: 'Flag indicating if it is the current version of the patient'
+        tests:
+          - accepted_values:
+              values: ['Y', 'N']
+    tests:
+      - dbt_utils.expression_is_true:
+          expression: effective_start_date < effective_end_date
