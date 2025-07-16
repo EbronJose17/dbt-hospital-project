@@ -52,6 +52,10 @@ final as (
         patient_billing
     on 
         patient_billing.patient_key = patient_appointments.patient_key
+    where
+        patient.is_current = 'Y'
 )   
+
+
 
 select * from final

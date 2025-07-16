@@ -2,13 +2,13 @@
     config(
         schema = "intermediate_schema",
         pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
-        post_hook = '{{ log_macro_end(this.name, invocation_id) }}'
+        post_hook = '{{ log_macro_end(this.name, invocation_id) }}',
+        tags = ['patient']
     )
 }}
 
 
 select 
-    concat ('P', row_number() over (order by(select null))) as patient_sk,
     coalesce(patient_id, 'Unknown') as patient_id,
     coalesce(first_name, 'Unknown') as first_name,
     coalesce(last_name, 'Unknown') as last_name,
