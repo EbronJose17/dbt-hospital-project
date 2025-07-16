@@ -5,7 +5,7 @@
         schema = 'marts_schema',
         pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
         post_hook = '{{ log_macro_end(this.name, invocation_id) }}',
-        tags = ['dim', 'treatment_type']
+        tags = ['dim', 'treatment']
     )
 }}
 
