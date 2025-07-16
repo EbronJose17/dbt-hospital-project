@@ -22,7 +22,7 @@ final as (
         treatment_type,
         treatment_description,
         treatment_cost_range,
-        updated_at
+        _dbt_updated_at
     from 
         base 
     where rn = 1

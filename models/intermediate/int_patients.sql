@@ -20,6 +20,6 @@ select
     coalesce(insurance_provider, 'Unknown') as insurance_provider,
     coalesce(insurance_number, 'Unknown') as insurance_number,
     coalesce(email, 'Unknown') as email,
-    current_timestamp as updated_at
+    current_timestamp() as _dbt_updated_at
 from 
     {{ref('stg_patients')}}

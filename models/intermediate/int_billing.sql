@@ -14,6 +14,7 @@ select
     to_date(bill_date) as bill_date,
     cast(amount as numeric(10, 2)) as amount,
     coalesce(payment_method, 'Unknown') as payment_method,
-    coalesce(payment_status, 'Unknown') as payment_status 
+    coalesce(payment_status, 'Unknown') as payment_status,
+    current_timestamp() as _dbt_updated_at
 from 
     {{ref('stg_billing')}}

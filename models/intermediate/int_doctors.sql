@@ -15,6 +15,7 @@ select
     coalesce(phone_number, 'Unknown') as phone_number,
     coalesce(years_experience, 0) as years_experience,
     coalesce(hospital_branch, 'Unknown') as hospital_branch,
-    coalesce(email, 'Unknown') as email
+    coalesce(email, 'Unknown') as email,
+    current_timestamp() as _dbt_updated_at
 from    
     {{ref('stg_doctors')}}

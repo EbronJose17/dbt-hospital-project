@@ -14,6 +14,7 @@ select
     to_date(appointment_date) as appointment_date,
     to_time(appointment_time) as appointment_time,
     coalesce(reason_for_visit, 'No Reason Provided') as reason_for_visit,
-    coalesce(status, 'Unknown Status') as status
+    coalesce(status, 'Unknown Status') as status,
+    current_timestamp() as _dbt_updated_at
 from 
     {{ref('stg_appointments')}}

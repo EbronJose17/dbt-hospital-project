@@ -36,7 +36,7 @@ final as (
         cast(t.cost as numeric(10, 2)) as treatment_cost,
         to_date(t.treatment_date) as treatment_date,
         concat(m.min_treatment_cost, ' - ', m.max_treatment_cost)as treatment_cost_range,
-        current_timestamp() as updated_at
+        current_timestamp() as _dbt_updated_at
     from
         base t
     left join 
