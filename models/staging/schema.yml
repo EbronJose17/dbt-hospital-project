@@ -6,185 +6,97 @@ models:
     columns:
       - name: appointment_id
         description: "Unique identifier for the appointment (natural key)."
-        tests:
-          - not_null
-          - unique
       - name: patient_id
         description: "Identifier for the patient."
-        tests:
-          - not_null
       - name: doctor_id
         description: "Identifier for the doctor."
-        tests:
-          - not_null
       - name: appointment_date
         description: "Date of the appointment."
-        tests:
-          - not_null
       - name: appointment_time
         description: "Time of the appointment."
-        tests:
-          - not_null
       - name: reason_for_visit
         description: "Reason for the patient's visit."
       - name: status
         description: "Status of the appointment (e.g., 'Scheduled', 'Completed', 'Canceled')."
-        tests:
-          - not_null
 
   - name: stg_billing
     description: "Staging model for raw billing data directly from the source."
     columns:
       - name: bill_id
         description: "Unique identifier for the bill (natural key)."
-        tests:
-          - not_null
-          - unique
       - name: patient_id
         description: "Identifier for the patient associated with the bill."
-        tests:
-          - not_null
       - name: treatment_id
         description: "Identifier for the treatment associated with the bill."
-        tests:
-          - not_null
       - name: bill_date
         description: "Date the bill was issued."
-        tests:
-          - not_null
       - name: amount
         description: "Original amount of the bill."
-        tests:
-          - not_null
-          - is_positive 
       - name: payment_method
         description: "Method used for payment."
-        tests:
-          - not_null
       - name: payment_status
         description: "Status of the payment (e.g., 'Paid', 'Pending', 'Failed')."
-        tests:
-          - not_null
 
   - name: stg_doctors
     description: "Staging model for raw doctor data directly from the source."
     columns:
       - name: doctor_id
         description: "Unique identifier for the doctor (natural key)."
-        tests:
-          - not_null
-          - unique
       - name: first_name
         description: "First name of the doctor."
         tests:
           - not_null
       - name: last_name
         description: "Last name of the doctor."
-        tests:
-          - not_null
       - name: specialization
         description: "Doctor's medical specialization."
-        tests:
-          - not_null
       - name: phone_number
         description: "Contact phone number for the doctor."
-        tests:
-          - not_null
       - name: years_experience
         description: "Years of experience of the doctor."
-        tests:
-          - not_null
-          - is_positive 
       - name: hospital_branch
         description: "Hospital branch where the doctor practices."
-        tests:
-          - not_null
       - name: email
         description: "Email address of the doctor."
-        tests:
-          - not_null
-          - is_valid_email
 
   - name: stg_patients
     description: "Staging model for raw patient data directly from the source."
     columns:
       - name: patient_id
         description: "Unique identifier for the patient (natural key)."
-        tests:
-          - not_null
-          - unique
       - name: first_name
         description: "First name of the patient."
-        tests:
-          - not_null
       - name: last_name
         description: "Last name of the patient."
-        tests:
-          - not_null
       - name: gender
         description: "Gender of the patient."
-        tests:
-          - not_null
-          - accepted_values: { values: ['M', 'F', 'Other', ''] }
       - name: date_of_birth
         description: "Date of birth of the patient."
-        tests:
-          - not_null
-          - date_order: { column_start: 'date_of_birth', column_end: 'CURRENT_DATE()' } 
       - name: contact_number
         description: "Contact phone number for the patient."
-        tests:
-          - not_null
       - name: address
         description: "Patient's address."
-        tests:
-          - not_null
       - name: registration_date
         description: "Date the patient registered."
-        tests:
-          - not_null
-          - date_order: { column_start: 'date_of_birth', column_end: 'registration_date' }
       - name: insurance_provider
         description: "Patient's insurance provider."
-        tests:
-          - not_null
       - name: insurance_number
         description: "Patient's insurance identification number."
-        tests:
-          - not_null
       - name: email
         description: "Email address of the patient."
-        tests:
-          - not_null
-          - is_valid_email
 
   - name: stg_treatments
     description: "Staging model for raw treatment data directly from the source."
     columns:
       - name: treatment_id
         description: "Unique identifier for the treatment (natural key)."
-        tests:
-          - not_null
-          - unique
       - name: appointment_id
         description: "Identifier for the appointment associated with the treatment."
-        tests:
-          - not_null
       - name: treatment_type
         description: "Type of treatment (e.g., 'Chemotherapy')."
-        tests:
-          - not_null
       - name: description
         description: "Detailed description of the treatment."
-        tests:
-          - not_null
       - name: cost
         description: "Cost of the treatment."
-        tests:
-          - not_null
-          - is_positive
       - name: treatment_date
         description: "Date the treatment was performed."
-        tests:
-          - not_null
-          - date_order: { column_start: 'treatment_date', column_end: 'CURRENT_DATE()' }

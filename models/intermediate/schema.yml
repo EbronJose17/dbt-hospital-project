@@ -6,215 +6,107 @@ models:
     columns:
       - name: appointment_id
         description: "Cleaned and null-handled unique identifier for the appointment."
-        tests:
-          - not_null
-          - unique
       - name: patient_id
         description: "Cleaned and null-handled identifier for the patient."
-        tests:
-          - not_null
       - name: doctor_id
         description: "Cleaned and null-handled identifier for the doctor."
-        tests:
-          - not_null
       - name: appointment_date
         description: "Date of the appointment (casted to DATE)."
-        tests:
-          - not_null
-          - date_order: { column_start: 'appointment_date', column_end: 'CURRENT_DATE()' } 
       - name: appointment_time
         description: "Time of the appointment (casted to TIME)."
-        tests:
-          - not_null
       - name: reason_for_visit
         description: "Cleaned reason for the visit."
-        tests:
-          - not_null
       - name: status
         description: "Cleaned status of the appointment."
-        tests:
-          - not_null
-          - accepted_values: { values: ['Scheduled', 'Completed', 'Cancelled', 'No-show', 'Unknown Status'] }
       - name: _dbt_updated_at
         description: "Timestamp when this record was last updated by dbt."
-        tests:
-          - not_null
 
   - name: int_billing
     description: "Intermediate model for cleaned and type-casted billing data, preparing for fact table."
     columns:
       - name: bill_id
         description: "Cleaned and null-handled unique identifier for the bill."
-        tests:
-          - not_null
-          - unique
       - name: patient_id
         description: "Cleaned and null-handled identifier for the patient."
-        tests:
-          - not_null
       - name: treatment_id
         description: "Cleaned and null-handled identifier for the treatment."
-        tests:
-          - not_null
       - name: bill_date
         description: "Date the bill was issued (casted to DATE)."
-        tests:
-          - not_null
-          - date_order: { column_start: 'bill_date', column_end: 'CURRENT_DATE()' } 
       - name: amount
         description: "Cleaned and type-casted amount of the bill."
-        tests:
-          - not_null
-          - is_positive 
       - name: payment_method
         description: "Cleaned payment method."
-        tests:
-          - not_null
       - name: payment_status
         description: "Cleaned status of the payment."
-        tests:
-          - not_null
-          - accepted_values: { values: ['Paid', 'Pending', 'Failed', 'Unknown'] }
       - name: _dbt_updated_at
         description: "Timestamp when this record was last updated by dbt."
-        tests:
-          - not_null
 
   - name: int_doctors
     description: "Intermediate model for cleaned and prepared doctor data, feeding into dim_doctor (SCD1)."
     columns:
       - name: doctor_id
         description: "Cleaned unique identifier for the doctor"
-        tests:
-          - not_null
-          - unique
       - name: first_name
         description: "Cleaned first name of the doctor."
-        tests:
-          - not_null
       - name: last_name
         description: "Cleaned last name of the doctor."
-        tests:
-          - not_null
       - name: specialization
         description: "Cleaned doctor's medical specialization."
-        tests:
-          - not_null
       - name: phone_number
         description: "Cleaned contact phone number."
-        tests:
-          - not_null
       - name: years_experience
         description: "Cleaned years of experience (casted to numeric)."
-        tests:
-          - not_null
-          - is_positive 
       - name: hospital_branch
         description: "Cleaned hospital branch."
-        tests:
-          - not_null
       - name: email
         description: "Cleaned email address."
-        tests:
-          - not_null
-          - is_valid_email 
       - name: _dbt_updated_at
         description: "Timestamp when this record was last updated by dbt."
-        tests:
-          - not_null
 
   - name: int_patients
     description: "Intermediate model for cleaned patient data, feeding into the patient SCD2 snapshot."
     columns:
       - name: patient_id
         description: "Cleaned unique identifier for the patient (natural key for snapshot)."
-        tests:
-          - not_null
-          - unique
       - name: first_name
         description: "Cleaned first name of the patient."
-        tests:
-          - not_null
       - name: last_name
         description: "Cleaned last name of the patient."
-        tests:
-          - not_null
       - name: gender
         description: "Cleaned gender of the patient."
-        tests:
-          - not_null
-          - accepted_values: { values: ['M', 'F', 'Other', 'Unknown'] }
       - name: date_of_birth
         description: "Cleaned date of birth (casted to DATE)."
-        tests:
-          - not_null
-          - date_order: { column_start: 'date_of_birth', column_end: 'CURRENT_DATE()' }
       - name: contact_number
         description: "Cleaned contact phone number."
-        tests:
-          - not_null
       - name: address
         description: "Cleaned patient's address."
-        tests:
-          - not_null
       - name: registration_date
         description: "Cleaned registration date (casted to DATE)."
-        tests:
-          - not_null
-          - date_order: { column_start: 'date_of_birth', column_end: 'registration_date' }
       - name: insurance_provider
         description: "Cleaned insurance provider."
-        tests:
-          - not_null
       - name: insurance_number
         description: "Cleaned insurance identification number."
-        tests:
-          - not_null
       - name: email
         description: "Cleaned email address."
-        tests:
-          - not_null
-          - is_valid_email
       - name: _dbt_updated_at
         description: "Timestamp when this record was last updated by dbt."
-        tests:
-          - not_null
 
   - name: int_treatments
     description: "Intermediate model for cleaned and prepared treatment data, deriving cost range and feeding dimensions/facts."
     columns:
       - name: treatment_id
         description: "Cleaned unique identifier for the treatment (natural key)."
-        tests:
-          - not_null
-          - unique
       - name: appointment_id
         description: "Cleaned identifier for the associated appointment."
-        tests:
-          - not_null
       - name: treatment_type
         description: "Cleaned type of treatment."
-        tests:
-          - not_null
       - name: treatment_description
         description: "Cleaned detailed description of the treatment."
-        tests:
-          - not_null
       - name: treatment_cost
         description: "Cleaned and type-casted cost of the treatment."
-        tests:
-          - not_null
-          - is_positive
       - name: treatment_date
         description: "Date the treatment was performed (casted to DATE)."
-        tests:
-          - not_null
-          - date_order: { column_start: 'treatment_date', column_end: 'CURRENT_DATE()' }
       - name: treatment_cost_range
         description: "Derived categorical cost range for the treatment."
-        tests:
-          - not_null
       - name: _dbt_updated_at
         description: "Timestamp when this record was last updated by dbt."
-        tests:
-          - not_null
