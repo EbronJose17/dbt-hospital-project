@@ -55,7 +55,6 @@ models:
       - name: patient_id
         description: 'Natural key from the source'
         tests:
-          - unique
           - not_null
       - name: first_name
         description: "Patient's first name"

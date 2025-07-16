@@ -9,7 +9,7 @@
 }}
 
 select 
-    patient_sk,
+    concat ('P', row_number() over (order by(select null))) as patient_sk,
     patient_id,
     first_name,
     last_name,
