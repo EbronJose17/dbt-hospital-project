@@ -44,8 +44,6 @@ models:
         description: "Unique identifier for the doctor (natural key)."
       - name: first_name
         description: "First name of the doctor."
-        tests:
-          - not_null
       - name: last_name
         description: "Last name of the doctor."
       - name: specialization

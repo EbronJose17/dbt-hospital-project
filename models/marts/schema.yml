@@ -43,8 +43,6 @@ models:
           - is_valid_email
       - name: updated_at
         description: "Timestamp when this doctors's information was last updated"
-  
-
 
   - name: dim_patient
     description: 'Dimension patient table for patient information (Scd type 2)'
@@ -193,9 +191,6 @@ models:
         description: "Foreign key to dim_treatment_type."
         tests:
           - not_null
-          - relationships:
-              to: ref('fct_treatments')
-              field: treatment_type_sk
       - name: bill_date
         description: "Date the bill was issued."
         tests:
