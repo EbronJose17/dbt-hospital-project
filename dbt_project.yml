@@ -2,7 +2,7 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'my_new_project'
+name: 'hospital_project'
 version: '1.0.0'
 config-version: 2
 
@@ -36,9 +36,18 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 
 models:
-  my_new_project:
-    # Applies to all files under models/example/
-    example:
+  hospital_project:
+    staging:
       +materialized: table
+      +schema: staging_schema
+      +tags: ["staging"]
+    intermediate:
+      +materialized: view
+      +schema: intermediate_schema
+      +tags: ["intermediate"]
+    marts:
+      +materialized: table
+      +schema: marts_schema
+      +tags: ["marts"]
 
 on-run-end: "{{ log_run_end_status(target.database, invocation_id, results) }}"

@@ -103,4 +103,149 @@ models:
           expression: effective_start_date < effective_end_date
 
   - name: dim_treatment_type
-    description: 'Dimension treatment type table containing treatment information'
+    description: "Dimension table for treatment types, updating in place with the latest description and cost range (SCD Type 1)."
+    columns:
+      - name: treatment_type_sk
+        description: "Surrogate key for treatment type (natural key: treatment_type)."
+        tests:
+          - unique
+          - not_null
+      - name: treatment_type
+        description: "Primary identifier for the treatment type (e.g., 'Chemotherapy')."
+        tests:
+          - not_null
+      - name: treatment_description
+        description: "The latest description associated with this treatment type."
+        tests:
+          - not_null
+      - name: treatment_cost_range
+        description: "Categorized cost range for the treatment type."
+        tests:
+          - not_null
+      - name: _dbt_updated_at
+        description: "Timestamp when this dimension record was last updated/processed by dbt."
+        tests:
+          - not_null
+
+  - name: fct_appointments
+    description: "Fact table for individual appointments, linked to relevant dimensions."
+    columns:
+      - name: appointment_sk
+        description: "Composite surrogate key for the appointment fact record."
+        tests:
+          - unique
+          - not_null
+      - name: appointment_key
+        description: "Surrogate key for the appointment."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('int_appointments')
+              field: appointment_sk
+      - name: patient_key
+        description: "Foreign key to dim_patient, linking to the patient's version at the time of appointment."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_patient')
+              field: patient_sk
+      - name: doctor_key
+        description: "Foreign key to dim_doctor."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_doctor')
+              field: doctor_sk
+      - name: appointment_date
+        description: "Date of the appointment."
+        tests:
+          - not_null
+      - name: appointment_time
+        description: "Time of the appointment."
+        tests:
+          - not_null
+      - name: reason_for_visit
+        description: "Reason for the patient's visit."
+        tests:
+          - not_null
+      - name: status
+        description: "Status of the appointment."
+        tests:
+          - not_null
+          - accepted_values: { values: ['Scheduled', 'Completed', 'Cancelled', 'No-show', 'Unknown Status'] }
+
+  - name: fct_billing
+    description: "Fact table for billing records, linked to patients and treatments."
+    columns:
+      - name: bill_key
+        description: "Composite surrogate key for the billing fact record."
+        tests:
+          - unique
+          - not_null
+      - name: patient_key
+        description: "Foreign key to dim_patient, linking to the patient's version at the time of billing."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_patient')
+              field: patient_sk
+      - name: treatment_key
+        description: "Foreign key to dim_treatment_type."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_treatments')
+              field: treatment_type_sk
+      - name: bill_date
+        description: "Date the bill was issued."
+        tests:
+          - not_null
+          - date_order: { column_start: 'bill_date', column_end: 'CURRENT_DATE()' } 
+      - name: amount
+        description: "Amount billed for the treatment."
+        tests:
+          - not_null
+          - is_positive 
+      - name: payment_method
+        description: "Method used for payment."
+        tests:
+          - not_null
+      - name: payment_status
+        description: "Status of the payment."
+        tests:
+          - not_null
+          - accepted_values: { values: ['Paid', 'Pending', 'Failed', 'Unknown'] }
+
+  - name: fct_patient_activity
+    description: "Aggregated fact table providing a summary of key activities for each patient's current state."
+    columns:
+      - name: patient_key
+        description: "Foreign key to the current version of dim_patient."
+        tests:
+          - not_null
+          - unique 
+          - relationships:
+              to: ref('dim_patient')
+              field: patient_sk
+      - name: total_appointments
+        description: "Total number of appointments for the patient."
+        tests:
+          - not_null
+          - is_positive 
+      - name: total_paid
+        description: "Total amount successfully paid by the patient."
+        tests:
+          - not_null
+          - is_positive 
+      - name: no_show_count
+        description: "Number of 'no-show' appointments for the patient."
+        tests:
+          - not_null
+      - name: first_appointment_date
+        description: "Date of the patient's earliest appointment."
+      - name: last_appointment_date
+        description: "Date of the patient's latest appointment."
+      - name: _dbt_updated_at
+        description: "Timestamp when this aggregated fact record was last updated by dbt."
+        tests:
+          - not_null

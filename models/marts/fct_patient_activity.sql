@@ -3,7 +3,8 @@
         schema = 'marts_schema',
         materialized = 'table',
         pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
-        post_hook = '{{ log_macro_end(this.name, invocation_id) }}'
+        post_hook = '{{ log_macro_end(this.name, invocation_id) }}',
+        tags = ['fact', 'patient_activity', 'summary']
     )
 }}
 
@@ -34,12 +35,13 @@ patient_billing as (
 final as (
     select
         patient.patient_sk as patient_key,
-        patient_appointments.total_appointments,
+        coalesce(patient_appointments.total_appointments, 0) as total_appointments,
         patient_billing.total_billed,
-        patient_billing.total_paid,
-        patient_appointments.no_show_count,
+        coalesce(patient_billing.total_paid, 0) as total_paid,
+        coalesce(patient_appointments.no_show_count, 0) as no_show_count,
         patient_appointments.first_appointment_date,
-        patient_appointments.last_appointment_date
+        patient_appointments.last_appointment_date,
+        current_timestamp() as _dbt_updated_at
     from    
         {{ref('dim_patient')}} patient
     left join 
