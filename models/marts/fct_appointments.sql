@@ -27,3 +27,5 @@ left join
     {{ref('dim_doctor')}} doctor
 on
     appointments.doctor_id = doctor.doctor_id
+where
+    patients.is_current = 'Y'

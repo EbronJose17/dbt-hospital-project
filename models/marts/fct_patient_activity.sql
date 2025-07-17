@@ -11,7 +11,7 @@
 with patient_appointments as (
     select 
         patient_key,
-        count(appointment_key) as total_appointments,
+        count(*) as total_appointments,
         count(case when status like 'No-show' then 1 end) as no_show_count,
         min(appointment_date) as first_appointment_date,
         max(appointment_date) as last_appointment_date
@@ -35,6 +35,7 @@ patient_billing as (
 final as (
     select
         patient.patient_sk as patient_key,
+        patient.patient_id as patient_id,
         coalesce(patient_appointments.total_appointments, 0) as total_appointments,
         patient_billing.total_billed,
         coalesce(patient_billing.total_paid, 0) as total_paid,
@@ -52,8 +53,9 @@ final as (
         patient_billing
     on 
         patient_billing.patient_key = patient_appointments.patient_key
-    where
+    where 
         patient.is_current = 'Y'
+    order by patient.patient_id
 )   
 
 
