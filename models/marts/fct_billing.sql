@@ -31,3 +31,5 @@ left join
 on  
     treatment_type.treatment_type = treatments.treatment_type and
     treatment_type.treatment_description = treatments.treatment_description
+where
+    patient.is_current = 'Y'
