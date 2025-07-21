@@ -16,13 +16,12 @@ with source as (
         phone_number,
         years_experience,
         hospital_branch,
-        email,
-        _dbt_updated_at as updated_at
+        email
     from 
         {{ref('int_doctors')}}
 )
-{% if is_incremental() %}
 
+{% if is_incremental() %}
 
 ,
 
@@ -37,14 +36,24 @@ target as (
         years_experience,
         hospital_branch,
         email,
-        updated_at
+        created_at
     from 
         {{this}}
 ),
 
 diff_data as (
     select 
-        src.*
+        src.doctor_sk,
+        src.doctor_id,
+        src.first_name,
+        src.last_name,
+        src.specialization,
+        src.phone_number,
+        src.years_experience,
+        src.hospital_branch,
+        src.email,
+        coalesce(tgt.created_at, current_timestamp()) as created_at,
+        current_timestamp() as updated_at
     from 
         source src left join target tgt 
     on 
@@ -61,10 +70,18 @@ diff_data as (
         src.email <> tgt.email
 )
 
-select * from diff_data
+select 
+    * 
+from 
+    diff_data
 
 {% else %}
 
-select * from source
+select 
+    *,
+    current_timestamp() as created_at,
+    current_timestamp() as updated_at
+from 
+    source
 
 {% endif %}

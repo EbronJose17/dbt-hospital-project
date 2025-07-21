@@ -47,7 +47,7 @@ changed_records as (
         f.treatment_type,
         f.treatment_description,
         f.treatment_cost_range,
-        e.created_at,
+        coalesce(e.created_at, current_timestamp()) as created_at,
         current_timestamp() as _dbt_updated_at
     from 
         final f left join existing e 
