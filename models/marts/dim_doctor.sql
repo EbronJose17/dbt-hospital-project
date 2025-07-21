@@ -1,87 +1,33 @@
-{{
-    config(
-        materialized = 'incremental',
-        unique_key = 'doctor_id',
-        schema = 'marts_schema',
-    )
-}}
+{{ config(
+    materialized = 'incremental',
+    unique_key = 'doctor_id',
+    merge_update_columns = ['first_name', 'last_name', 'specialization', 'phone_number', 'years_experience', 'hospital_branch', 'email'],
+    tags = ['dim', 'doctor'],
+    pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
+    post_hook = '{{ log_macro_end(this.name, invocation_id) }}'
+)}}
 
-with source as (
-    select 
-        doctor_sk,
-        doctor_id,
-        first_name,
-        last_name,
-        specialization,
-        phone_number,
-        years_experience,
-        hospital_branch,
-        email
-    from 
-        {{ref('int_doctors')}}
-)
+
+SELECT
+    int_doctor.doctor_sk,
+    int_doctor.doctor_id,
+    int_doctor.first_name,
+    int_doctor.last_name,
+    int_doctor.specialization,
+    int_doctor.phone_number,
+    int_doctor.years_experience,
+    int_doctor.hospital_branch,
+    int_doctor.email,
+    {% if is_incremental() %}
+        COALESCE(target_doctor.created_at, int_doctor.created_at) AS created_at,
+    {% else %}
+        int_doctor.created_at AS created_at, 
+    {% endif %}
+    CURRENT_TIMESTAMP() AS updated_at
+FROM
+    {{ ref('int_doctors') }} int_doctor
 
 {% if is_incremental() %}
-
-,
-
-target as (
-    select 
-        doctor_sk,
-        doctor_id,
-        first_name,
-        last_name,
-        specialization,
-        phone_number,
-        years_experience,
-        hospital_branch,
-        email,
-        created_at
-    from 
-        {{this}}
-),
-
-diff_data as (
-    select 
-        src.doctor_sk,
-        src.doctor_id,
-        src.first_name,
-        src.last_name,
-        src.specialization,
-        src.phone_number,
-        src.years_experience,
-        src.hospital_branch,
-        src.email,
-        coalesce(tgt.created_at, current_timestamp()) as created_at,
-        current_timestamp() as updated_at
-    from 
-        source src left join target tgt 
-    on 
-        src.doctor_id = tgt.doctor_id
-    where 
-        tgt.doctor_id is null or
-        src.doctor_sk <> tgt.doctor_sk or
-        src.first_name <> tgt.first_name or 
-        src.last_name <> tgt.last_name or
-        src.specialization <> tgt.specialization or
-        src.phone_number <> tgt.phone_number or 
-        src.years_experience <> tgt.years_experience or 
-        src.hospital_branch <> tgt.hospital_branch or
-        src.email <> tgt.email
-)
-
-select 
-    * 
-from 
-    diff_data
-
-{% else %}
-
-select 
-    *,
-    current_timestamp() as created_at,
-    current_timestamp() as updated_at
-from 
-    source
-
+LEFT JOIN {{ this }} AS target_doctor 
+    ON int_doctor.doctor_id = target_doctor.doctor_id
 {% endif %}
