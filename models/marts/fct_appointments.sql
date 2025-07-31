@@ -9,10 +9,10 @@
 }}
 
 select 
-    concat('AP_',substring(appointments.appointment_sk, 2), substring(patients.patient_sk, 2), substring(doctor.doctor_sk, 2)) as appointment_sk,
+    concat('AP_',substring(appointments.appointment_sk, 2), substring(patients.patient_sk, 2), substring(doctor.doctor_id, 2)) as appointment_sk,
     appointments.appointment_sk as appointment_key,
     patients.patient_sk as patient_key,
-    doctor.doctor_sk as doctor_key,
+    doctor.doctor_id as doctor_id,
     appointments.appointment_date,
     appointments.appointment_time,
     appointments.reason_for_visit,

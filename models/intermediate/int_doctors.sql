@@ -1,14 +1,14 @@
 {{
     config(
         schema = "intermediate_schema",
+        materialized = "table",
         pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
-        post_hook = '{{ log_macro_end(this.name, invocation_id) }}',
+        post_hook = "{{ log_macro_end(this.name, invocation_id, 'created_at') }}",
         tags ='doctor'
     )
 }}
 
 select 
-    concat('D', row_number() over(order by(select null))) as doctor_sk,
     coalesce(doctor_id, 'Unknown') as doctor_id,
     coalesce(first_name, 'Unknown') as first_name,
     coalesce(last_name, 'Unknown') as last_name,
@@ -20,3 +20,5 @@ select
     created_at
 from    
     {{ref('stg_doctors')}}
+where 
+    created_at > to_timestamp_ntz('{{get_max_updated_timestamp(this.name)}}')

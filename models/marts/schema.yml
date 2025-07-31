@@ -4,14 +4,6 @@ models:
   - name: dim_doctor
     description: 'Dimension doctor table for doctor information (Scd type 1)'
     columns:
-      - name: doctor_sk
-        description: 'Surrogate key for doctors (Natural Key: doctor_id)'
-        tests:
-          - relationships:
-              to: ref('int_doctors')
-              field: doctor_sk
-          - unique
-          - not_null
       - name: doctor_id
         description: Natural key from source 
         tests:
