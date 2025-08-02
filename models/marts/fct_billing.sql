@@ -9,8 +9,8 @@
 }}
 
 select 
-    billing.billing_sk as bill_key,
-    patient.patient_sk as patient_key,
+    billing.bill_id,
+    patient.patient_id as patient_id,
     treatment_type.treatment_type_sk as treatment_key,
     billing.bill_date,
     billing.amount,

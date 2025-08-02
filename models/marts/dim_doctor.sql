@@ -15,7 +15,7 @@ from
 {% if is_incremental() %}
      where doctor_id not in (
         select t.doctor_id from {{this}} t
-        left join {{ref('int_doctors')}} s on t.doctor_id = s.doctor_id
+        join {{ref('int_doctors')}} s on t.doctor_id = s.doctor_id
         where 
             t.first_name <> s.first_name and
             t.last_name <> s.last_name and

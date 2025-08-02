@@ -8,7 +8,6 @@
 }}
 
 select 
-    concat('B', row_number() over (order by(select null))) as billing_sk,
     coalesce(bill_id, 'Unknown') as bill_id,
     coalesce(patient_id, 'Unknown') as patient_id,
     coalesce(treatment_id, 'Unknown') as treatment_id,
@@ -16,6 +15,6 @@ select
     cast(amount as numeric(10, 2)) as amount,
     coalesce(payment_method, 'Unknown') as payment_method,
     coalesce(payment_status, 'Unknown') as payment_status,
-    current_timestamp() as _dbt_updated_at
+    updated_at
 from 
     {{ref('stg_billing')}}

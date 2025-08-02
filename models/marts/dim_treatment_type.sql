@@ -19,7 +19,7 @@ with base as(
 
 final as (
     select 
-        concat('T_TYPE_', row_number() over(order by(select null))) as treatment_type_sk,
+        {{dbt_utils.generate_surrogate_key(['treatment_type', 'treatment_description'])}} as treatment_type_sk,
         treatment_type,
         treatment_description,
         treatment_cost_range
