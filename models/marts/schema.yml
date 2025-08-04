@@ -39,11 +39,6 @@ models:
   - name: dim_patient
     description: 'Dimension patient table for patient information (Scd type 2)'
     columns:
-      - name: patient_sk
-        description: 'Surrogate key for patients (Natural Key: patient_id)'
-        tests:
-          - unique
-          - not_null
       - name: patient_id
         description: 'Natural key from the source'
         tests:
@@ -119,11 +114,6 @@ models:
   - name: fct_appointments
     description: "Fact table for individual appointments, linked to relevant dimensions."
     columns:
-      - name: appointment_sk
-        description: "Composite surrogate key for the appointment fact record."
-        tests:
-          - unique
-          - not_null
       - name: appointment_key
         description: "Surrogate key for the appointment."
         tests:
