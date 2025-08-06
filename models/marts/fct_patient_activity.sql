@@ -1,7 +1,8 @@
 {{
     config(
         schema = 'marts_schema',
-        materialized = 'table',
+        materialized = 'incremental',
+        unique_key = 'patient_id',
         pre_hook = "{{ log_model_start(this.name, invocation_id, model.config.materialized, target.database, model.config.schema) }}",
         post_hook = '{{ log_macro_end(this.name, invocation_id) }}',
         tags = ['patient']
@@ -40,8 +41,7 @@ final as (
         coalesce(patient_billing.total_paid, 0) as total_paid,
         coalesce(patient_appointments.no_show_count, 0) as no_show_count,
         patient_appointments.first_appointment_date,
-        patient_appointments.last_appointment_date,
-        patient.effective_start_date
+        patient_appointments.last_appointment_date
     from    
         {{ref('dim_patient')}} patient
     left join 
